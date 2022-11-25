@@ -156,5 +156,9 @@ func GetIPLocation(ip string) (location string, err error) {
 	if err != nil {
 		return "", err
 	}
+	//如果没查出来
+	if ipLocation.Data.Isp[0] == "unknown" {
+		return "", nil
+	}
 	return strings.Join(ipLocation.Data.Isp, " "), nil
 }

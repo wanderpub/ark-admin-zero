@@ -18,15 +18,17 @@ import (
 	"golang.org/x/crypto/pkcs12"
 )
 
+const DefaultTimeout = 10 * time.Second // HTTP 请求默认超时时间
+
 // HTTPGet get 请求
 func HTTPGet(uri string) ([]byte, error) {
 	return HTTPGetContext(context.Background(), uri)
 }
 
 // 初始化http请求client
-func Client() *http.Client {
+func HttpClient() *http.Client {
 	return &http.Client{
-		Timeout: time.Duration(10 * time.Second),
+		Timeout: DefaultTimeout,
 	}
 }
 
@@ -36,7 +38,7 @@ func HTTPGetContext(ctx context.Context, uri string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	response, err := Client().Do(request)
+	response, err := HttpClient().Do(request)
 	if err != nil {
 		return nil, err
 	}
@@ -65,7 +67,7 @@ func HTTPPostContext(ctx context.Context, uri string, data []byte, header map[st
 		request.Header.Set(key, value)
 	}
 
-	response, err := Client().Do(request)
+	response, err := HttpClient().Do(request)
 	if err != nil {
 		return nil, err
 	}
@@ -86,7 +88,7 @@ func PostJSON(uri string, obj interface{}) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	response, err := Client().Post(uri, "application/json;charset=utf-8", jsonBuf)
+	response, err := HttpClient().Post(uri, "application/json;charset=utf-8", jsonBuf)
 	if err != nil {
 		return nil, err
 	}
@@ -108,7 +110,7 @@ func PostJSONWithRespContentType(uri string, obj interface{}) ([]byte, string, e
 		return nil, "", err
 	}
 
-	response, err := Client().Post(uri, "application/json;charset=utf-8", jsonBuf)
+	response, err := HttpClient().Post(uri, "application/json;charset=utf-8", jsonBuf)
 	if err != nil {
 		return nil, "", err
 	}
@@ -181,7 +183,7 @@ func PostMultipartForm(fields []MultipartFormField, uri string) (respBody []byte
 	contentType := bodyWriter.FormDataContentType()
 	bodyWriter.Close()
 
-	resp, e := Client().Post(uri, contentType, bodyBuf)
+	resp, e := HttpClient().Post(uri, contentType, bodyBuf)
 	if e != nil {
 		err = e
 		return
@@ -202,7 +204,7 @@ func PostXML(uri string, obj interface{}) ([]byte, error) {
 	}
 
 	body := bytes.NewBuffer(xmlData)
-	response, err := Client().Post(uri, "application/xml;charset=utf-8", body)
+	response, err := HttpClient().Post(uri, "application/xml;charset=utf-8", body)
 	if err != nil {
 		return nil, err
 	}
