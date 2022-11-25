@@ -3,7 +3,6 @@ package utils
 import (
 	"errors"
 	"fmt"
-	"io"
 	"math"
 	"net"
 	"net/http"
@@ -148,16 +147,14 @@ func Long2IP(i uint) (net.IP, error) {
 
 // 通过腾讯服务获取IP对应的地理位置
 func GetIPLocation(ip string) (location string, err error) {
-	resp, _ := http.Get(fmt.Sprintf("https://ping.huatuo.qq.com/index.php?btype=logic&ldns=%s", ip))
+	body, err := HTTPGet(fmt.Sprintf("https://ping.huatuo.qq.com/index.php?btype=logic&ldns=%s", ip))
 	if err != nil {
 		return "", err
 	}
-	defer resp.Body.Close()
-	body, err := io.ReadAll(resp.Body)
-	// location = string(body)
-	// location = map[string]interface{}{}
 	var ipLocation IpLocation
 	err = jsonx.Unmarshal(body, &ipLocation)
-
-	return strings.Join(ipLocation.Data.Isp, " "), err
+	if err != nil {
+		return "", err
+	}
+	return strings.Join(ipLocation.Data.Isp, " "), nil
 }
