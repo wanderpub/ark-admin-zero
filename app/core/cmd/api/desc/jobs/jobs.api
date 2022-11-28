@@ -12,9 +12,23 @@ type SendRequest {
 	MessageParam      MessageParam `json:"messageParam"`
 }
 type MessageParam {
-	Receiver string `json:"receiver"` //接收者 多个用,逗号号分隔开
-	// Variables interface{}           `json:"variables,optional"` //可选 消息内容中的可变部分(占位符替换)
-	Extra map[string]interface{} `json:"extra,optional"` //可选 扩展参数
+	Receiver  string                 `json:"receiver"`           //接收者 多个用,逗号号分隔开
+	Variables ContentModel           `json:"variables,optional"` //可选 消息内容中的可变部分(占位符替换)
+	Extra     map[string]interface{} `json:"extra,optional"`     //可选 扩展参数
+}
+
+type ContentModel {
+	Map        map[string]string `json:"map,optional"`        //消息数据key/value形式
+	Array      []string          `json:"array,optional"`      //消息数据数组形式
+	TemplateId string            `json:"templateId,optional"` // 发送消息的模版ID
+	Url        string            `json:"url,optional"`        // 消息的URL地址
+	Title      string            `json:"title,optional"`      //标题
+	Content    string            `json:"content,optional"`    //内容
+	MediaId    string            `json:"mediaId,optional"`    //媒体ID
+	SendType   string            `json:"sendType,optional"`   //类型
+	SignName   string            `json:"signName,optional"`   //签名
+	AppID      string            `json:"appId,optional"`      //appid
+	ID         string            `json:"id,optional"`         //外部编号
 }
 type CronJobRequest {
 	JobId          int    `json:"jobId"`                 // 编码
@@ -120,27 +134,27 @@ type (
 )
 
 service core-api {
-    @doc(summary: "添加到队列")
-    @handler add
+	@doc(summary: "添加到队列")
+	@handler add
 	post /queue/add (SendRequest) returns (Response)
-
-    @doc(summary: "获取计划任务")
+	
+	@doc(summary: "获取计划任务")
 	@handler get
 	get /get/:id (JobDetailReq) returns (JobData)
-    
-    @doc(summary: "创建计划任务")
+	
+	@doc(summary: "创建计划任务")
 	@handler create
 	post /add (AddJobReq) returns (JobData)
 	
-    @doc(summary: "更新计划任务")
+	@doc(summary: "更新计划任务")
 	@handler update
 	post /update (UpdateJobReq) returns (UpdateJobResp)
 	
-    @doc(summary: "删除计划任务")
+	@doc(summary: "删除计划任务")
 	@handler delete
 	post /delete (DeleteJobReq) returns (DeleteJobResp)
 	
-    @doc(summary: "计划任务列表")
+	@doc(summary: "计划任务列表")
 	@handler search
 	post /search (JobSearchReq) returns (JobSearchResp)
 }
