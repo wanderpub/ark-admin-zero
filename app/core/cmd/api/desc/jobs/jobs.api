@@ -1,0 +1,146 @@
+info(
+	title: "队列、延时、计划任务"
+	desc: "队列、延时、计划任务"
+	author: "wander"
+	email: "13834563@qq.com"
+)
+
+type SendRequest {
+	Code              string       `json:"code"`
+	Time              int64        `json:"time,optional"`
+	MessageTemplateId int64        `json:"messageTemplateId"`
+	MessageParam      MessageParam `json:"messageParam"`
+}
+type MessageParam {
+	Receiver string `json:"receiver"` //接收者 多个用,逗号号分隔开
+	// Variables interface{}           `json:"variables,optional"` //可选 消息内容中的可变部分(占位符替换)
+	Extra map[string]interface{} `json:"extra,optional"` //可选 扩展参数
+}
+type CronJobRequest {
+	JobId          int    `json:"jobId"`                 // 编码
+	JobName        string `json:"jobName"`               // 名称
+	JobType        int    `json:"jobType"`               // 任务类型
+	CronExpression string `json:"cronExpression"`        // cron表达式
+	InvokeTarget   string `json:"invokeTarget,optional"` // 调用目标
+	Args           string `json:"args,optional"`         // 目标参数
+	Status         int    `json:"status,optional"`       // 状态
+	EntryId        string `json:"entry_id,optional"`     // job启动时返回的id
+}
+
+type DelCrontabRequest {
+	EntryId string `json:"entry_id,optional"` // job启动时返回的id
+}
+type Response {
+	Message string `json:"message"`
+}
+
+type JobData {
+	JobId          int64  `json:"job_id"`
+	JobName        string `json:"job_name"`
+	JobGroup       string `json:"job_group"`
+	JobType        int64  `json:"job_type"`
+	CronExpression string `json:"cron_expression"`
+	InvokeTarget   string `json:"invoke_target"`
+	Args           string `json:"args"`
+	MisfirePolicy  int64  `json:"misfire_policy"`
+	Concurrent     int64  `json:"concurrent"`
+	Status         int64  `json:"status"`
+	EntryId        string `json:"entry_id"`
+	CreatedAt      int64  `json:"created_at"` // 创建时间
+}
+
+type (
+	JobDetailReq {
+		Id int64 `path:"id"`
+	}
+)
+
+type (
+	AddJobReq {
+		JobName        string `form:"job_name"`
+		JobGroup       string `form:"job_group"`
+		JobType        int64  `form:"job_type"`
+		CronExpression string `form:"cron_expression"`
+		InvokeTarget   string `form:"invoke_target"`
+		Args           string `form:"args"`
+	}
+	AddJobResp {
+		JobData JobData `json:"data"`
+	}
+)
+
+type (
+	UpdateJobReq {
+		JobId          int64  `form:"job_id"`
+		JobName        string `form:"job_name"`
+		JobGroup       string `form:"job_group"`
+		JobType        int64  `form:"job_type"`
+		CronExpression string `form:"cron_expression"`
+		InvokeTarget   string `form:"invoke_target"`
+		Args           string `form:"args"`
+	}
+	UpdateJobResp {
+		Code    string `json:"code"`
+		Message string `json:"message"`
+	}
+)
+
+type (
+	DeleteJobReq {
+		Id int64 `form:"id"`
+	}
+	DeleteJobResp {
+		Code    string `json:"code"`
+		Message string `json:"message"`
+	}
+)
+
+type (
+	JobSearchReq {
+		Id       int64  `form:"id,optional"`          //ID
+		JobName  string `form:"job_name,optional"`    //名称
+		JobType  int64  `form:"job_type,optional"`    //类型
+		PageSize int64  `form:"page_size,default=20"` //一页大小
+		Page     int64  `form:"page,default=1"`       //当前页
+	}
+	JobSearchResp {
+		Page      int64     `json:"page"`
+		PageSize  int64     `json:"page_size"`
+		PageCount int64     `json:"page_count"`
+		Count     int64     `json:"total"`
+		List      []JobData `json:"list"`
+	}
+)
+
+@server(
+	jwt: JwtAuth
+	group : jobs
+	prefix : /admin/jobs
+	middleware: PermMenuAuth
+)
+
+service core-api {
+    @doc(summary: "添加到队列")
+    @handler add
+	post /queue/add (SendRequest) returns (Response)
+
+    @doc(summary: "获取计划任务")
+	@handler get
+	get /get/:id (JobDetailReq) returns (JobData)
+    
+    @doc(summary: "创建计划任务")
+	@handler create
+	post /add (AddJobReq) returns (JobData)
+	
+    @doc(summary: "更新计划任务")
+	@handler update
+	post /update (UpdateJobReq) returns (UpdateJobResp)
+	
+    @doc(summary: "删除计划任务")
+	@handler delete
+	post /delete (DeleteJobReq) returns (DeleteJobResp)
+	
+    @doc(summary: "计划任务列表")
+	@handler search
+	post /search (JobSearchReq) returns (JobSearchResp)
+}
