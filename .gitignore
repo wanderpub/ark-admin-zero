@@ -1,2 +1,16 @@
+# idea
 .idea
-/data/
+.idea/
+*.iml
+.DS_Store
+**/.DS_Store
+
+#deploy data
+data
+data/*
+
+# gitlab ci
+.cache
+
+#vscode
+.vscode
