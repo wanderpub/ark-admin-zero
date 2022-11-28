@@ -27,3 +27,6 @@ import "desc/config/dict.api"
 
 // 日志管理模块
 import "desc/log/log.api"
+
+// 队列、计划任务相关模块
+import "desc/jobs/jobs.api"
