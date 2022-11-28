@@ -1,0 +1,6 @@
+configs:
+  - cronspec: "@every 5s"
+    task_type: crontab
+
+  - cronspec: "* * * * *"
+    task_type: bar
