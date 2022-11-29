@@ -48,6 +48,7 @@ curl --location --request POST 'http://localhost:8888/send' \
 --header 'Content-Type: application/json' \
 --data-raw '{
     "code": "email",
+    "time": 0,
     "message_params": {
         "receiver": "test@qq.com",
         "variables": {
@@ -67,9 +68,9 @@ curl --location --request POST 'http://localhost:8888/send' \
     "code": "offiaccount",
     "time":1000,
     "message_params": {
-        "template_id":"j-OfIahoJGKC1hHCUEU-XapusCHzL6KTN9D3ntHgOD0",
         "receiver": "oyggS5xOHgKvYo_f2GlZQexBOick",
         "variables": {
+            "template_id":"j-OfIahoJGKC1hHCUEU-XapusCHzL6KTN9D3ntHgOD0",
             "map": {
                 "first":"张三12333|#FF0000",
                 "keyword1":"12212321|#FF0000",
@@ -86,10 +87,11 @@ curl --location --request POST 'http://localhost:8888/send' \
 --header 'Content-Type: application/json' \
 --data-raw '{
     "code": "offiaccount",
+    "time": 0,
     "message_params": {
-        "template_id":"j-OfIahoJGKC1hHCUEU-XapusCHzL6KTN9D3ntHgOD0",
         "receiver": "openId",
         "variables": {
+            "template_id":"j-OfIahoJGKC1hHCUEU-XapusCHzL6KTN9D3ntHgOD0",
             "map": {
                 "name":"张三12333|#0000FF"
             },
