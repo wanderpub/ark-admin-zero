@@ -63,7 +63,7 @@ func (h tencentSmsHandler) DoHandler(ctx context.Context, sendTask model.SendTas
 		return
 	}
 	if err != nil {
-		panic(err)
+		return err
 	}
 	// 输出json格式的字符串回包
 	fmt.Printf("%s", response.ToJsonString())

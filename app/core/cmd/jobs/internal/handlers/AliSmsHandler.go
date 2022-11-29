@@ -56,6 +56,6 @@ func (h aliSmsHandler) DoHandler(ctx context.Context, sendTask model.SendTaskMod
 	if err != nil {
 		return errors.Wrap(err, "alismsHandler DialAndSend err")
 	}
-	fmt.Printf("%s", response.String())
+	fmt.Printf("%v", response.Body)
 	return nil
 }

@@ -5,6 +5,7 @@ import (
 	"ark-admin-zero/app/core/cmd/api/internal/middleware"
 	"ark-admin-zero/app/core/model"
 
+	"github.com/hibiken/asynq"
 	"github.com/zeromicro/go-zero/core/stores/redis"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 	"github.com/zeromicro/go-zero/rest"
@@ -13,6 +14,7 @@ import (
 type ServiceContext struct {
 	Config             config.Config
 	Redis              *redis.Redis
+	AsynqClient        *asynq.Client
 	PermMenuAuth       rest.Middleware
 	SysUserModel       model.SysUserModel
 	SysPermMenuModel   model.SysPermMenuModel
@@ -22,6 +24,10 @@ type ServiceContext struct {
 	SysProfessionModel model.SysProfessionModel
 	SysDictionaryModel model.SysDictionaryModel
 	SysLogModel        model.SysLogModel
+	TaskTemplateModel  model.SysTaskTemplateModel //消息模版
+	TaskAccountModel   model.SysTaskAccountModel  //发消息的帐号
+	TaskJobModel       model.SysTaskJobModel      //计划任务
+	TaskLogModel       model.SysTaskLogModel      //日志
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -33,6 +39,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	return &ServiceContext{
 		Config:             c,
 		Redis:              redisClient,
+		AsynqClient:        asynq.NewClient(asynq.RedisClientOpt{Addr: c.Redis.Host, Password: c.Redis.Pass}),
 		PermMenuAuth:       middleware.NewPermMenuAuthMiddleware(redisClient).Handle,
 		SysUserModel:       model.NewSysUserModel(mysqlConn, c.Cache),
 		SysPermMenuModel:   model.NewSysPermMenuModel(mysqlConn, c.Cache),
@@ -42,5 +49,9 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		SysProfessionModel: model.NewSysProfessionModel(mysqlConn, c.Cache),
 		SysDictionaryModel: model.NewSysDictionaryModel(mysqlConn, c.Cache),
 		SysLogModel:        model.NewSysLogModel(mysqlConn, c.Cache),
+		TaskTemplateModel:  model.NewSysTaskTemplateModel(mysqlConn, c.Cache),
+		TaskAccountModel:   model.NewSysTaskAccountModel(mysqlConn, c.Cache),
+		TaskJobModel:       model.NewSysTaskJobModel(mysqlConn, c.Cache),
+		TaskLogModel:       model.NewSysTaskLogModel(mysqlConn, c.Cache),
 	}
 }

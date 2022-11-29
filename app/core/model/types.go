@@ -16,10 +16,10 @@ type TaskInfo struct {
 
 type SendTaskModel struct {
 	Code              string       `json:"code"`
-	MessageTemplateId int64        `json:"messageTemplateId"`
+	MessageTemplateId int64        `json:"message_template_id"`
 	Time              int64        `json:"time"`
-	MessageParamList  MessageParam `json:"messageParamList"`
-	TaskInfo          TaskInfo     `json:"taskInfo"`
+	MessageParamList  MessageParam `json:"message_params"`
+	TaskInfo          TaskInfo     `json:"task_info"`
 }
 
 type MessageParam struct {
@@ -29,17 +29,17 @@ type MessageParam struct {
 }
 
 type ContentModel struct {
-	Map        map[string]string `json:"map,optional"`        //消息数据key/value形式
-	Array      []string          `json:"array,optional"`      //消息数据数组形式
-	TemplateId string            `json:"templateId,optional"` // 发送消息的模版ID
-	Url        string            `json:"url,optional"`        // 消息的URL地址
-	Title      string            `json:"title,optional"`      //标题
-	Content    string            `json:"content,optional"`    //内容
-	MediaId    string            `json:"mediaId,optional"`    //媒体ID
-	SendType   string            `json:"sendType,optional"`   //类型
-	SignName   string            `json:"signName,optional"`   //签名
-	AppID      string            `json:"appId,optional"`      //appid
-	ID         string            `json:"id,optional"`         //外部编号
+	Map        map[string]string `json:"map,optional"`         //消息数据key/value形式
+	Array      []string          `json:"array,optional"`       //消息数据数组形式
+	TemplateId string            `json:"template_id,optional"` // 发送消息的模版ID
+	Url        string            `json:"url,optional"`         // 消息的URL地址
+	Title      string            `json:"title,optional"`       //标题
+	Content    string            `json:"content,optional"`     //内容
+	MediaId    string            `json:"media_id,optional"`    //媒体ID
+	SendType   string            `json:"send_type,optional"`   //类型
+	SignName   string            `json:"sign_name,optional"`   //签名
+	AppID      string            `json:"app_id,optional"`      //appid
+	ID         string            `json:"id,optional"`          //外部编号
 }
 
 type PeriodLimit struct {

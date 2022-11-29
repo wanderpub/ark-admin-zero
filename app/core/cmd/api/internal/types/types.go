@@ -464,3 +464,121 @@ type LogLoginPageResp struct {
 	List       []LogLogin `json:"list"`
 	Pagination Pagination `json:"pagination"`
 }
+
+type SendRequest struct {
+	Code              string       `json:"code"`
+	Time              int64        `json:"time,optional"`
+	MessageTemplateId int64        `json:"message_template_id"`
+	MessageParam      MessageParam `json:"message_params"`
+}
+
+type MessageParam struct {
+	Receiver  string                 `json:"receiver"`           //接收者 多个用,逗号号分隔开
+	Variables ContentModel           `json:"variables,optional"` //可选 消息内容中的可变部分(占位符替换)
+	Extra     map[string]interface{} `json:"extra,optional"`     //可选 扩展参数
+}
+
+type ContentModel struct {
+	Map        map[string]string `json:"map,optional"`        //消息数据key/value形式
+	Array      []string          `json:"array,optional"`      //消息数据数组形式
+	TemplateId string            `json:"template_id,optional"` // 发送消息的模版ID
+	Url        string            `json:"url,optional"`        // 消息的URL地址
+	Title      string            `json:"title,optional"`      //标题
+	Content    string            `json:"content,optional"`    //内容
+	MediaId    string            `json:"media_id,optional"`    //媒体ID
+	SendType   string            `json:"send_type,optional"`   //类型
+	SignName   string            `json:"sign_name,optional"`   //签名
+	AppID      string            `json:"app_id,optional"`      //appid
+	ID         string            `json:"id,optional"`         //外部编号
+}
+
+type CronJobRequest struct {
+	JobId          int    `json:"jobId"`                 // 编码
+	JobName        string `json:"jobName"`               // 名称
+	JobType        int    `json:"jobType"`               // 任务类型
+	CronExpression string `json:"cronExpression"`        // cron表达式
+	InvokeTarget   string `json:"invokeTarget,optional"` // 调用目标
+	Args           string `json:"args,optional"`         // 目标参数
+	Status         int    `json:"status,optional"`       // 状态
+	EntryId        string `json:"entry_id,optional"`     // job启动时返回的id
+}
+
+type DelCrontabRequest struct {
+	EntryId string `json:"entry_id,optional"` // job启动时返回的id
+}
+
+type Response struct {
+	Message string `json:"message"`
+}
+
+type JobData struct {
+	JobId          int64  `json:"job_id"`
+	JobName        string `json:"job_name"`
+	JobGroup       string `json:"job_group"`
+	JobType        int64  `json:"job_type"`
+	CronExpression string `json:"cron_expression"`
+	InvokeTarget   string `json:"invoke_target"`
+	Args           string `json:"args"`
+	MisfirePolicy  int64  `json:"misfire_policy"`
+	Concurrent     int64  `json:"concurrent"`
+	Status         int64  `json:"status"`
+	EntryId        string `json:"entry_id"`
+	CreatedAt      int64  `json:"created_at"` // 创建时间
+}
+
+type JobDetailReq struct {
+	Id int64 `path:"id"`
+}
+
+type AddJobReq struct {
+	JobName        string `form:"job_name"`
+	JobGroup       string `form:"job_group"`
+	JobType        int64  `form:"job_type"`
+	CronExpression string `form:"cron_expression"`
+	InvokeTarget   string `form:"invoke_target"`
+	Args           string `form:"args"`
+}
+
+type AddJobResp struct {
+	JobData JobData `json:"data"`
+}
+
+type UpdateJobReq struct {
+	JobId          int64  `form:"job_id"`
+	JobName        string `form:"job_name"`
+	JobGroup       string `form:"job_group"`
+	JobType        int64  `form:"job_type"`
+	CronExpression string `form:"cron_expression"`
+	InvokeTarget   string `form:"invoke_target"`
+	Args           string `form:"args"`
+}
+
+type UpdateJobResp struct {
+	Code    string `json:"code"`
+	Message string `json:"message"`
+}
+
+type DeleteJobReq struct {
+	Id int64 `form:"id"`
+}
+
+type DeleteJobResp struct {
+	Code    string `json:"code"`
+	Message string `json:"message"`
+}
+
+type JobSearchReq struct {
+	Id       int64  `form:"id,optional"`          //ID
+	JobName  string `form:"job_name,optional"`    //名称
+	JobType  int64  `form:"job_type,optional"`    //类型
+	PageSize int64  `form:"page_size,default=20"` //一页大小
+	Page     int64  `form:"page,default=1"`       //当前页
+}
+
+type JobSearchResp struct {
+	Page      int64     `json:"page"`
+	PageSize  int64     `json:"page_size"`
+	PageCount int64     `json:"page_count"`
+	Count     int64     `json:"total"`
+	List      []JobData `json:"list"`
+}

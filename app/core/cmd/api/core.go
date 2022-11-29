@@ -25,8 +25,6 @@ func main() {
 	conf.MustLoad(*configFile, &c)
 
 	server := rest.MustNewServer(c.RestConf, rest.WithCors())
-	defer server.Stop()
-
 	ctx := svc.NewServiceContext(c)
 	handler.RegisterHandlers(server, ctx)
 
@@ -39,6 +37,12 @@ func main() {
 			return http.StatusInternalServerError, nil
 		}
 	})
+
+	defer func() {
+		server.Stop()
+		//关闭asynq客户端
+		ctx.AsynqClient.Close()
+	}()
 
 	if c.Mode == "dev" {
 		logx.DisableStat()

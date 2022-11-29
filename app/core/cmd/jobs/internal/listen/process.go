@@ -57,10 +57,13 @@ func (l *AsynqTask) handleSendProcess(ctx context.Context, t *asynq.Task) error 
 			RetryIn: time.Duration(rand.Intn(10)) * time.Second,
 		}
 	}
+	json, _ := jsonx.MarshalToString(t.Payload())
+	fmt.Println(json)
 	var p model.SendTaskModel
 	if err := jsonx.Unmarshal(t.Payload(), &p); err != nil {
 		return err
 	}
+	fmt.Println("接收人:", p.MessageParamList.Receiver)
 	messageTemplate, err := l.svcCtx.TaskTemplateModel.FindOne(ctx, p.MessageTemplateId)
 	if err != nil {
 		return errorx.Wrapf(err, "查询模板异常 err:%v 模板id:%d", err, p.MessageTemplateId)

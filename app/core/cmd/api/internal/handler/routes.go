@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	configdict "ark-admin-zero/app/core/cmd/api/internal/handler/config/dict"
+	jobs "ark-admin-zero/app/core/cmd/api/internal/handler/jobs"
 	loglogin "ark-admin-zero/app/core/cmd/api/internal/handler/log/login"
 	sysdept "ark-admin-zero/app/core/cmd/api/internal/handler/sys/dept"
 	sysjob "ark-admin-zero/app/core/cmd/api/internal/handler/sys/job"
@@ -315,5 +316,45 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		),
 		rest.WithJwt(serverCtx.Config.JwtAuth.AccessSecret),
 		rest.WithPrefix("/admin/log/login"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.PermMenuAuth},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/queue/addqueue",
+					Handler: jobs.SendHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodGet,
+					Path:    "/get/:id",
+					Handler: jobs.GetHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/add",
+					Handler: jobs.CreateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/update",
+					Handler: jobs.UpdateHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/delete",
+					Handler: jobs.DeleteHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/search",
+					Handler: jobs.SearchHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithJwt(serverCtx.Config.JwtAuth.AccessSecret),
+		rest.WithPrefix("/admin/jobs"),
 	)
 }
